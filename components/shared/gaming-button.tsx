@@ -1,14 +1,9 @@
 "use client";
 
-import { useState, useRef, ReactNode } from "react";
-import { motion, AnimatePresence } from "framer-motion";
-import { Loader2, Check } from "lucide-react";
-import { cn } from "@/lib/utils";
-import Link from "next/link";
-
-export interface GamingButtonProps {
+import { useState, useRef } from "react";
+import type { MouseEvent, ReactNode, Ref } from "react";
 import { motion, AnimatePresence, useReducedMotion } from "framer-motion";
-import { Loader2 } from "lucide-react";
+import { Loader2, Check } from "lucide-react";
 import { cn } from "@/lib/utils";
 import Link from "next/link";
 
@@ -17,7 +12,7 @@ import { Variant, VARIANT_THEME_MAP, getVariantRgba, rgba } from "./variants";
 export type { Variant };
 const MotionLink = motion.create(Link);
 
-interface GamingButtonProps {
+export interface GamingButtonProps {
   variant?: Variant;
   size?: "sm" | "md" | "lg";
   loading?: boolean;
@@ -128,10 +123,8 @@ function GamingButtonShell({
   const effectiveVariant = success ? "success" : variant;
   const styles = variantStyles[effectiveVariant];
 
-  const handleClick = (e: React.MouseEvent<HTMLButtonElement>) => {
-    if (disabled || loading || success) return;
-  const handleClick = (e: React.MouseEvent<HTMLElement>) => {
-    if (disabled || loading) {
+  const handleClick = (e: MouseEvent<HTMLElement>) => {
+    if (disabled || loading || success) {
       // A link has no native `disabled`, so block navigation explicitly.
       if (href) e.preventDefault();
       return;
@@ -315,7 +308,7 @@ function GamingButtonShell({
   if (href) {
     return (
       <MotionLink
-        ref={buttonRef as React.Ref<HTMLAnchorElement>}
+        ref={buttonRef as Ref<HTMLAnchorElement>}
         href={href}
         aria-disabled={isDisabled || undefined}
         tabIndex={isDisabled ? -1 : undefined}
@@ -331,7 +324,7 @@ function GamingButtonShell({
 
   return (
     <motion.button
-      ref={buttonRef as React.Ref<HTMLButtonElement>}
+      ref={buttonRef as Ref<HTMLButtonElement>}
       type={type}
       disabled={isDisabled}
       className={sharedClassName}
