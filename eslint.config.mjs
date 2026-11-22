@@ -1,9 +1,10 @@
-import nextEslintConfig from "@eslint/eslintrc/dist/eslintrc.cjs";
+import { defineConfig, globalIgnores } from "eslint/config";
+import nextVitals from "eslint-config-next/core-web-vitals";
+import nextTs from "eslint-config-next/typescript";
 
-/** @type {import("eslint").Linter.Config[]} */
-export default [
-  ...nextEslintConfig.defaults.nexteslint,
-  ...nextEslintConfig.defaults["next/typescript"],
+export default defineConfig([
+  ...nextVitals,
+  ...nextTs,
   {
     rules: {
       "@typescript-eslint/no-explicit-any": "error",
@@ -12,4 +13,5 @@ export default [
       "react/prop-types": "off",
     },
   },
-];
+  globalIgnores([".next/**", "out/**", "build/**", "next-env.d.ts"]),
+]);
