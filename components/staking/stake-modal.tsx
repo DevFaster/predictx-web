@@ -674,6 +674,75 @@ export function StakeModal({
     return () => window.removeEventListener("keydown", handler);
   }, [open, txStep, onClose]);
 
+  // ── Focus management ───────────────────────────────────────────────────────
+
+  useEffect(() => {
+    if (!open) return;
+
+    // Store the previously focused element
+    previouslyFocusedRef.current = document.activeElement as HTMLElement | null;
+
+    // Focus the close button after the transition
+    const timer = setTimeout(() => {
+      const closeButton = panelRef.current?.querySelector(
+        'button[aria-label="Close"]',
+      ) as HTMLElement | null;
+      closeButton?.focus();
+    }, 300); // Wait for framer-motion transition
+
+    return () => clearTimeout(timer);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.key !== "Tab") return;
+
+      const focusableElements = panelRef.current?.querySelectorAll<HTMLElement>(
+        'button, [href], input, select, textarea, [tabindex]:not([tabindex="-1"])',
+      );
+
+      if (!focusableElements || focusableElements.length === 0) return;
+
+      const firstElement = focusableElements[0];
+      const lastElement = focusableElements[focusableElements.length - 1];
+
+      if (e.shiftKey) {
+        if (document.activeElement === firstElement) {
+          e.preventDefault();
+          lastElement.focus();
+        }
+      } else {
+        if (document.activeElement === lastElement) {
+          e.preventDefault();
+          firstElement.focus();
+        }
+      }
+    };
+
+    document.addEventListener("keydown", handleKeyDown);
+    return () => document.removeEventListener("keydown", handleKeyDown);
+  }, [open]);
+
+  useEffect(() => {
+    if (!open) return;
+
+    // Mark the rest of the page as inert for accessibility
+    const mainContent = document.getElementById("main-content");
+    if (mainContent) {
+      mainContent.setAttribute("inert", "");
+    }
+
+    return () => {
+      if (mainContent) {
+        mainContent.removeAttribute("inert");
+      }
+      // Restore focus to previously focused element
+      previouslyFocusedRef.current?.focus();
+    };
+  }, [open]);
+
   // ── Transaction flow ───────────────────────────────────────────────────
 
   const handleConfirmClick = useCallback(() => {

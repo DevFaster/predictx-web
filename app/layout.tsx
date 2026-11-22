@@ -119,11 +119,13 @@ export default function RootLayout({
           <BackgroundEffects />
         </CardErrorBoundary>
 
-        {/* Content: pad for fixed header (4rem = h-16) on all breakpoints */}
-        <div className="pt-16 pb-16 md:pb-0" />
-        <PageTransition>
-          {children}
-        </PageTransition>
+        {/* Content: pad for header (4rem) on desktop */}
+        <div className="md:pt-16 pb-16 md:pb-0" />
+        <main id="main-content">
+          <PageTransition>
+            {children}
+          </PageTransition>
+        </main>
         <CardErrorBoundary componentName="ErrorHandlerMount">
           <ErrorHandlerMount />
         </CardErrorBoundary>
