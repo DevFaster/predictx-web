@@ -25,14 +25,14 @@ import { nativeToScVal } from "@stellar/stellar-sdk";
 describe("lib/soroban-types", () => {
   it("converts XLM to stroops correctly", () => {
     expect(STROOPS_PER_XLM).toBe(10_000_000);
-    expect(xlmToStroops(1)).toBe(10_000_000n);
-    expect(xlmToStroops(0.5)).toBe(5_000_000n);
-    expect(xlmToStroops(100)).toBe(1_000_000_000n);
+    expect(xlmToStroops(1)).toBe(BigInt(10_000_000));
+    expect(xlmToStroops(0.5)).toBe(BigInt(5_000_000));
+    expect(xlmToStroops(100)).toBe(BigInt(1_000_000_000));
   });
 
   it("converts stroops to XLM correctly", () => {
-    expect(stroopsToXlm(10_000_000n)).toBe(1);
-    expect(stroopsToXlm(5_000_000n)).toBe(0.5);
+    expect(stroopsToXlm(BigInt(10_000_000))).toBe(1);
+    expect(stroopsToXlm(BigInt(5_000_000))).toBe(0.5);
     expect(stroopsToXlm(10_000_000)).toBe(1);
   });
 
