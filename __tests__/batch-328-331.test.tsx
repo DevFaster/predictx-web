@@ -53,6 +53,7 @@ describe("Batch #328 - #331 UI enhancements", () => {
     it("PollCard uses PoolProgressBar instead of green for YES", () => {
       const dummyPoll: Poll = {
         id: "poll-1",
+        createdAt: new Date().toISOString(),
         matchId: "match-1",
         question: "Will Arsenal win?",
         category: "team_event",

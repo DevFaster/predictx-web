@@ -1,4 +1,4 @@
-import { PLATFORM_FEE_PERCENTAGE, XLM_USD_RATE } from "@/lib/constants";
+import { PLATFORM_FEE_PERCENTAGE, VOTING_WINDOW_HOURS, XLM_USD_RATE } from "@/lib/constants";
 
 export interface WinningsCalculation {
 	grossWinnings: number;
@@ -247,7 +247,7 @@ export function msUntilLock(
  * hardcoded as `2 * 60 * 60 * 1000` in `voting-card.tsx`, which is why the
  * constant existed but had no consumers.
  */
-export const VOTING_WINDOW_MS = 2 * 60 * 60 * 1000;
+export const VOTING_WINDOW_MS = VOTING_WINDOW_HOURS * 60 * 60 * 1000;
 
 /**
  * Epoch ms at which voting on a poll closes: the lock instant plus the voting
@@ -265,4 +265,26 @@ export function getVotingDeadline(
 	const lock = new Date(lockISO).getTime();
 	if (Number.isNaN(lock)) return Number.NaN;
 	return lock + VOTING_WINDOW_MS;
+}
+
+/** ISO timestamp for the end of the community voting window. */
+export function getVotingDeadlineISO(
+  poll: { lockTime: LockTimeKey | string; lockTargetISO?: string },
+  match: { kickoff: string } | undefined,
+): string {
+  const deadline = getVotingDeadline(poll, match);
+  return Number.isNaN(deadline) ? "" : new Date(deadline).toISOString();
+}
+
+/** Whether the poll is within its post-lock voting window. */
+export function isVotingOpen(
+  poll: { status?: string; lockTime: LockTimeKey | string; lockTargetISO?: string },
+  match: { kickoff: string } | undefined,
+  now: number = Date.now(),
+): boolean {
+  if (!match || poll.status === "resolved") return false;
+  const lockISO = getLockTargetISO(match.kickoff, poll.lockTime, poll.lockTargetISO);
+  const lockTime = new Date(lockISO).getTime();
+  const deadline = getVotingDeadline(poll, match);
+  return Number.isFinite(lockTime) && now >= lockTime && now < deadline;
 }

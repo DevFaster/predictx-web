@@ -62,6 +62,9 @@ export const ADMIN_REVIEW_THRESHOLD = 0.6; // 60% consensus
  */
 export const DISPUTE_WINDOW_HOURS = 24;
 
+/** Community voting remains open for this many hours after a poll locks. */
+export const VOTING_WINDOW_HOURS = 2;
+
 
 /* Stellar Network*/
 

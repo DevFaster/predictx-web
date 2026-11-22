@@ -213,6 +213,7 @@ function PollPreview({ form, matchLabel }: { form: FormState; matchLabel: string
 
     const draftPoll: Poll = {
         id: "draft-preview",
+        createdAt: new Date().toISOString(),
         matchId: form.matchId || selectedMatch?.id || "",
         question: hasQuestion ? form.question : "Your question will appear here...",
         category: (form.category as PollCategory) || "player_event",

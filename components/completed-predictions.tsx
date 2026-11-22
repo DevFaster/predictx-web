@@ -1,6 +1,7 @@
 "use client";
 
-import { useState } from "react";
+import { useState, useEffect, useRef } from "react";
+
 import {
   TrendingUp,
   TrendingDown,
@@ -11,8 +12,6 @@ import {
   ChevronDown,
   ArrowUpDown,
 } from "lucide-react";
-import { useState, useEffect, useRef } from "react";
-import { TrendingUp, TrendingDown, Calendar, CheckCircle, Trophy, Coins } from "lucide-react";
 import { toast } from "sonner";
 import { motion, AnimatePresence } from "framer-motion";
 import { EmptyState } from "./shared/empty-state";

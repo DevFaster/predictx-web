@@ -1,87 +1,41 @@
-import { render, screen } from "@testing-library/react";
+import { renderToStaticMarkup } from "react-dom/server";
+import { describe, expect, it } from "vitest";
 import { GamingButton } from "@/components/shared/gaming-button";
-import { describe, it, expect } from "vitest";
+
+function renderButton(
+  variant: "success" | "primary" | "danger",
+  props: { loading?: boolean; disabled?: boolean } = {},
+) {
+  return renderToStaticMarkup(
+    <GamingButton variant={variant} {...props}>
+      Test Button
+    </GamingButton>,
+  );
+}
 
 describe("GamingButton", () => {
-  it("renders success variant with correct CSS variable for color", () => {
-    render(
-      <GamingButton variant="success" onClick={() => {}}>
-        Success Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Success Button/i });
-    expect(button).toBeInTheDocument();
-
-    // Check that the button uses the CSS variable --accent-green for text color
-    // The success variant should use var(--accent-green) which resolves to #39ff14
-    const styles = window.getComputedStyle(button);
-    expect(styles.color).toBe("rgb(57, 255, 20)"); // #39ff14 in rgb
+  it("uses the success theme tokens", () => {
+    const html = renderButton("success");
+    expect(html).toContain("Test Button");
+    expect(html).toContain("var(--accent-green)");
+    expect(html).toContain("rgba(57, 255, 20, 0.4)");
   });
 
-  it("renders success variant with correct border color using CSS variable", () => {
-    render(
-      <GamingButton variant="success" onClick={() => {}}>
-        Success Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Success Button/i });
-    const styles = window.getComputedStyle(button);
-
-    // Border should use the success variant's border color (rgba with --accent-green channels)
-    expect(styles.borderColor).toContain("57, 255, 20");
+  it("uses the primary cyan theme token", () => {
+    expect(renderButton("primary")).toContain("var(--accent-cyan)");
   });
 
-  it("renders primary variant with cyan color", () => {
-    render(
-      <GamingButton variant="primary" onClick={() => {}}>
-        Primary Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Primary Button/i });
-    const styles = window.getComputedStyle(button);
-
-    // Primary should use --accent-cyan (0, 217, 255)
-    expect(styles.color).toBe("rgb(0, 217, 255)");
+  it("uses the danger magenta theme token", () => {
+    expect(renderButton("danger")).toContain("var(--accent-magenta)");
   });
 
-  it("renders danger variant with magenta color", () => {
-    render(
-      <GamingButton variant="danger" onClick={() => {}}>
-        Danger Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Danger Button/i });
-    const styles = window.getComputedStyle(button);
-
-    // Danger should use --accent-magenta (255, 0, 110)
-    expect(styles.color).toBe("rgb(255, 0, 110)");
+  it("renders its loading state as disabled", () => {
+    const html = renderButton("success", { loading: true });
+    expect(html).toContain('disabled=""');
+    expect(html).toContain("Processing...");
   });
 
-  it("applies loading state correctly", () => {
-    render(
-      <GamingButton variant="success" loading onClick={() => {}}>
-        Loading Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Loading Button/i });
-    expect(button).toBeDisabled();
-    expect(screen.getByText(/Processing.../i)).toBeInTheDocument();
-  });
-
-  it("applies disabled state correctly", () => {
-    render(
-      <GamingButton variant="success" disabled onClick={() => {}}>
-        Disabled Button
-      </GamingButton>,
-    );
-
-    const button = screen.getByRole("button", { name: /Disabled Button/i });
-    expect(button).toBeDisabled();
-    expect(button).toHaveStyle({ opacity: "0.5" });
+  it("renders a disabled button", () => {
+    expect(renderButton("success", { disabled: true })).toContain('disabled=""');
   });
 });

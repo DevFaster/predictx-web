@@ -19,6 +19,7 @@ import type { Poll, PollStatus } from "@/lib/mock-data";
 function makePoll(id: string, status: PollStatus): Poll {
   return {
     id,
+    createdAt: new Date().toISOString(),
     matchId: "m1",
     question: `Question ${id}?`,
     category: "other",
